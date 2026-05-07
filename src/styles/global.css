@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+@theme {
+  /* Brand colors */
+  --color-tabisora: #2B6CB0;        /* 旅空ブルー */
+  --color-tabisora-deep: #1F4E7A;
+  --color-nukumori: #F6AD55;         /* ぬくもりオレンジ */
+  --color-nukumori-deep: #DD8E3A;
+  --color-kami: #FFFAF0;             /* 紙ベージュ */
+  --color-sumi: #2D3748;             /* 墨グレー */
+  --color-sumi-soft: #4A5568;
+
+  /* Fonts */
+  --font-sans: "Noto Sans JP", system-ui, -apple-system, "Helvetica Neue", sans-serif;
+  --font-serif: "Noto Serif JP", "Hiragino Mincho ProN", "Yu Mincho", serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-kami);
+  color: var(--color-sumi);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.font-serif {
+  font-family: var(--font-serif);
+}

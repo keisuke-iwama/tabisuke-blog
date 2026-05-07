@@ -1,0 +1,150 @@
+---
+import Layout from "../layouts/Layout.astro";
+
+const pillars = [
+  {
+    icon: "🗾",
+    title: "国内旅行記",
+    description: "エリア別の現地レポ。実際に歩いて、食べて、泊まったリアルな記録。",
+  },
+  {
+    icon: "💡",
+    title: "旅のノウハウ",
+    description: "予算・持ち物・交通・子連れ。旅をスムーズにする実用的な知識。",
+  },
+  {
+    icon: "🍜",
+    title: "グルメ・宿レビュー",
+    description: "現地でしか味わえない一皿、もう一度泊まりたい宿の本音レビュー。",
+  },
+];
+
+const socials = [
+  { name: "Instagram", href: "https://instagram.com/hello.tabisuke", handle: "@hello.tabisuke", disabled: false },
+  { name: "X", href: "#", handle: "近日公開", disabled: true },
+  { name: "YouTube", href: "#", handle: "近日公開", disabled: true },
+];
+---
+
+<Layout>
+  <main class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="border-b border-sumi/10">
+      <div class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2 group">
+          <span class="text-2xl">🧭</span>
+          <span class="font-serif text-xl font-bold text-tabisora group-hover:text-tabisora-deep transition-colors">
+            たびすけ
+          </span>
+        </a>
+        <span class="hidden sm:inline-block text-xs px-3 py-1 rounded-full bg-nukumori/20 text-nukumori-deep font-medium">
+          Coming Soon
+        </span>
+      </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="flex-1 flex items-center">
+      <div class="max-w-5xl mx-auto px-6 py-16 sm:py-24 w-full">
+        <div class="text-center max-w-3xl mx-auto">
+          <p class="text-tabisora font-medium text-sm tracking-widest mb-6 uppercase">
+            Travel Media
+          </p>
+          <h1 class="font-serif text-4xl sm:text-5xl md:text-6xl font-bold text-sumi leading-tight mb-6">
+            <span class="block">旅をたすける、</span>
+            <span class="block text-tabisora">旅でみつける。</span>
+          </h1>
+          <p class="text-base sm:text-lg text-sumi-soft leading-relaxed mb-10">
+            国内旅行記、旅のノウハウ、グルメ・宿レビュー。<br class="hidden sm:block" />
+            あなたの次の旅を、ちょっと豊かにする情報メディアです。
+          </p>
+          <div class="inline-flex items-center gap-3 bg-white border-2 border-nukumori/30 rounded-full px-6 py-3 shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-nukumori animate-pulse"></span>
+            <span class="text-sm font-medium text-sumi">
+              現在、最初の旅を準備中です
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3 Pillars -->
+    <section class="bg-white border-y border-sumi/10">
+      <div class="max-w-5xl mx-auto px-6 py-16 sm:py-20">
+        <div class="text-center mb-12">
+          <h2 class="font-serif text-2xl sm:text-3xl font-bold text-sumi mb-3">
+            これからお届けする3つの軸
+          </h2>
+          <div class="w-16 h-1 bg-nukumori mx-auto rounded-full"></div>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-6">
+          {pillars.map((p) => (
+            <article class="bg-kami rounded-2xl p-6 sm:p-8 border border-sumi/5 hover:border-tabisora/30 transition-colors">
+              <div class="text-4xl mb-4">{p.icon}</div>
+              <h3 class="font-serif text-lg font-bold text-sumi mb-2">{p.title}</h3>
+              <p class="text-sm text-sumi-soft leading-relaxed">{p.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- SNS Links -->
+    <section>
+      <div class="max-w-5xl mx-auto px-6 py-16 sm:py-20">
+        <div class="text-center mb-10">
+          <h2 class="font-serif text-2xl sm:text-3xl font-bold text-sumi mb-3">
+            SNSでも発信中
+          </h2>
+          <p class="text-sm text-sumi-soft">
+            日々の旅のかけらは、各SNSで先行公開しています。
+          </p>
+        </div>
+        <div class="grid sm:grid-cols-3 gap-4 max-w-2xl mx-auto">
+          {socials.map((s) => (
+            s.disabled ? (
+              <div class="bg-white border border-sumi/10 rounded-xl px-5 py-4 text-center opacity-50 cursor-not-allowed">
+                <p class="font-bold text-sumi mb-1">{s.name}</p>
+                <p class="text-xs text-sumi-soft">{s.handle}</p>
+              </div>
+            ) : (
+              <a
+                href={s.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="bg-white border border-sumi/10 rounded-xl px-5 py-4 text-center hover:border-tabisora hover:shadow-md transition-all"
+              >
+                <p class="font-bold text-tabisora mb-1">{s.name}</p>
+                <p class="text-xs text-sumi-soft">{s.handle}</p>
+              </a>
+            )
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-sumi text-kami">
+      <div class="max-w-5xl mx-auto px-6 py-12">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl">🧭</span>
+              <span class="font-serif text-xl font-bold">たびすけ</span>
+            </div>
+            <p class="text-sm text-kami/70">旅をたすける、旅でみつける。</p>
+          </div>
+          <div class="text-sm text-kami/70">
+            <p>お問い合わせ:</p>
+            <a href="mailto:contact@tabisuke.blog" class="text-nukumori hover:text-nukumori-deep transition-colors">
+              contact@tabisuke.blog
+            </a>
+          </div>
+        </div>
+        <div class="border-t border-kami/10 mt-8 pt-6 text-xs text-kami/50 text-center">
+          © {new Date().getFullYear()} たびすけ. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  </main>
+</Layout>
