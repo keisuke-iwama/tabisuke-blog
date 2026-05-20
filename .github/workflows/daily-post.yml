@@ -1,0 +1,53 @@
+name: Daily Auto Post
+
+on:
+  schedule:
+    # 23:00 UTC = 8:00 JST (翌日)
+    - cron: '0 23 * * *'
+  workflow_dispatch: # 手動実行も可能
+
+permissions:
+  contents: write # commit & push 用
+
+jobs:
+  generate-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Generate post
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: node scripts/generate-post.mjs
+
+      - name: Commit new post
+        run: |
+          git config user.name "tabisuke-bot"
+          git config user.email "contact@tabisuke.blog"
+          git add src/content/posts/
+          if git diff --cached --quiet; then
+            echo "No new post (generation produced no changes)"
+            exit 1
+          fi
+          git commit -m "post: daily auto-generated article"
+          git push
+
+      - name: Build site
+        run: npm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=tabisuke --branch=main

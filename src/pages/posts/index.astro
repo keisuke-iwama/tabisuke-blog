@@ -1,0 +1,111 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("posts"))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" });
+---
+
+<Layout
+  title="記事一覧｜たびすけ"
+  description="たびすけが発信する国内旅行記・旅のノウハウ・グルメ宿レビューの記事一覧です。"
+>
+  <main class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="border-b border-sumi/10 bg-white">
+      <div class="max-w-5xl mx-auto px-6 py-5 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2 group">
+          <span class="text-2xl">🧭</span>
+          <span class="font-serif text-xl font-bold text-tabisora group-hover:text-tabisora-deep transition-colors">
+            たびすけ
+          </span>
+        </a>
+        <a href="/" class="text-sm text-sumi-soft hover:text-tabisora transition-colors">
+          ← トップへ
+        </a>
+      </div>
+    </header>
+
+    <!-- Title -->
+    <section class="border-b border-sumi/10">
+      <div class="max-w-5xl mx-auto px-6 py-12 sm:py-16 text-center">
+        <h1 class="font-serif text-3xl sm:text-4xl font-bold text-sumi mb-3">記事一覧</h1>
+        <p class="text-sm text-sumi-soft">旅のヒントを毎日お届けしています。</p>
+        <div class="w-16 h-1 bg-nukumori mx-auto rounded-full mt-6"></div>
+      </div>
+    </section>
+
+    <!-- Posts -->
+    <section class="flex-1">
+      <div class="max-w-5xl mx-auto px-6 py-12 sm:py-16">
+        {
+          posts.length === 0 ? (
+            <p class="text-center text-sumi-soft py-12">
+              まだ記事がありません。準備中です。
+            </p>
+          ) : (
+            <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {posts.map((post) => (
+                <a
+                  href={`/posts/${post.id}/`}
+                  class="bg-white rounded-2xl p-6 border border-sumi/5 hover:border-tabisora/30 hover:shadow-md transition-all flex flex-col"
+                >
+                  <div class="text-4xl mb-3">{post.data.heroEmoji}</div>
+                  <div class="flex items-center gap-2 mb-3">
+                    <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-tabisora/10 text-tabisora">
+                      {post.data.category}
+                    </span>
+                    <time
+                      class="text-xs text-sumi-soft"
+                      datetime={post.data.pubDate.toISOString()}
+                    >
+                      {formatDate(post.data.pubDate)}
+                    </time>
+                  </div>
+                  <h2 class="font-serif text-lg font-bold text-sumi mb-2 leading-snug">
+                    {post.data.title}
+                  </h2>
+                  <p class="text-sm text-sumi-soft leading-relaxed flex-1">
+                    {post.data.description}
+                  </p>
+                  <p class="text-xs text-tabisora mt-4 font-medium">続きを読む →</p>
+                </a>
+              ))}
+            </div>
+          )
+        }
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-sumi text-kami">
+      <div class="max-w-5xl mx-auto px-6 py-12">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl">🧭</span>
+              <span class="font-serif text-xl font-bold">たびすけ</span>
+            </div>
+            <p class="text-sm text-kami/70">旅をたすける、旅でみつける。</p>
+          </div>
+          <div class="text-sm text-kami/70">
+            <p>お問い合わせ:</p>
+            <a
+              href="mailto:contact@tabisuke.blog"
+              class="text-nukumori hover:text-nukumori-deep transition-colors"
+            >
+              contact@tabisuke.blog
+            </a>
+          </div>
+        </div>
+        <div class="border-t border-kami/10 mt-8 pt-6 text-xs text-kami/50 text-center">
+          © {new Date().getFullYear()} たびすけ. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  </main>
+</Layout>

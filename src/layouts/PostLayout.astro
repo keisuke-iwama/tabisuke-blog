@@ -1,0 +1,198 @@
+---
+import Layout from "./Layout.astro";
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  category: string;
+  tags: string[];
+  heroEmoji: string;
+  aiGenerated: boolean;
+}
+
+const { title, description, pubDate, category, tags, heroEmoji, aiGenerated } = Astro.props;
+
+const formattedDate = pubDate.toLocaleDateString("ja-JP", {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+});
+---
+
+<Layout title={`${title}｜たびすけ`} description={description}>
+  <main class="min-h-screen flex flex-col">
+    <!-- Header -->
+    <header class="border-b border-sumi/10 bg-white">
+      <div class="max-w-3xl mx-auto px-6 py-5 flex items-center justify-between">
+        <a href="/" class="flex items-center gap-2 group">
+          <span class="text-2xl">🧭</span>
+          <span class="font-serif text-xl font-bold text-tabisora group-hover:text-tabisora-deep transition-colors">
+            たびすけ
+          </span>
+        </a>
+        <a href="/posts/" class="text-sm text-sumi-soft hover:text-tabisora transition-colors">
+          記事一覧 →
+        </a>
+      </div>
+    </header>
+
+    <!-- Article -->
+    <article class="flex-1">
+      <!-- Hero -->
+      <div class="bg-white border-b border-sumi/10">
+        <div class="max-w-3xl mx-auto px-6 py-12 sm:py-16">
+          <div class="flex items-center gap-3 mb-4">
+            <span class="text-xs font-medium px-3 py-1 rounded-full bg-tabisora/10 text-tabisora">
+              {category}
+            </span>
+            <time class="text-xs text-sumi-soft" datetime={pubDate.toISOString()}>
+              {formattedDate}
+            </time>
+          </div>
+          <div class="text-5xl mb-4">{heroEmoji}</div>
+          <h1 class="font-serif text-3xl sm:text-4xl font-bold text-sumi leading-tight mb-4">
+            {title}
+          </h1>
+          <p class="text-base text-sumi-soft leading-relaxed">
+            {description}
+          </p>
+          {tags.length > 0 && (
+            <div class="mt-6 flex flex-wrap gap-2">
+              {tags.map((tag: string) => (
+                <span class="text-xs text-sumi-soft bg-kami border border-sumi/10 rounded-full px-3 py-1">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="max-w-3xl mx-auto px-6 py-12 sm:py-16">
+        <div class="prose-tabisuke">
+          <slot />
+        </div>
+
+        {aiGenerated && (
+          <div class="mt-12 pt-8 border-t border-sumi/10">
+            <p class="text-xs text-sumi-soft text-center">
+              ✨ この記事はAI補助により執筆・編集されています
+            </p>
+          </div>
+        )}
+      </div>
+    </article>
+
+    <!-- Related links -->
+    <section class="bg-white border-t border-sumi/10">
+      <div class="max-w-3xl mx-auto px-6 py-12 text-center">
+        <a href="/posts/" class="inline-flex items-center gap-2 text-tabisora hover:text-tabisora-deep transition-colors font-medium">
+          ← 記事一覧に戻る
+        </a>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-sumi text-kami">
+      <div class="max-w-3xl mx-auto px-6 py-12">
+        <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="text-xl">🧭</span>
+              <span class="font-serif text-xl font-bold">たびすけ</span>
+            </div>
+            <p class="text-sm text-kami/70">旅をたすける、旅でみつける。</p>
+          </div>
+          <div class="text-sm text-kami/70">
+            <p>お問い合わせ:</p>
+            <a href="mailto:contact@tabisuke.blog" class="text-nukumori hover:text-nukumori-deep transition-colors">
+              contact@tabisuke.blog
+            </a>
+          </div>
+        </div>
+        <div class="border-t border-kami/10 mt-8 pt-6 text-xs text-kami/50 text-center">
+          © {new Date().getFullYear()} たびすけ. All rights reserved.
+        </div>
+      </div>
+    </footer>
+  </main>
+</Layout>
+
+<style is:global>
+  .prose-tabisuke {
+    color: var(--color-sumi);
+    font-size: 1rem;
+    line-height: 1.85;
+  }
+  .prose-tabisuke > * + * {
+    margin-top: 1.25em;
+  }
+  .prose-tabisuke h2 {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--color-sumi);
+    margin-top: 2.5em;
+    margin-bottom: 0.75em;
+    padding-left: 0.75rem;
+    border-left: 4px solid var(--color-tabisora);
+  }
+  .prose-tabisuke h3 {
+    font-family: var(--font-serif);
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--color-sumi);
+    margin-top: 2em;
+    margin-bottom: 0.5em;
+  }
+  .prose-tabisuke p {
+    margin: 0;
+  }
+  .prose-tabisuke a {
+    color: var(--color-tabisora);
+    text-decoration: underline;
+    text-decoration-color: rgba(43, 108, 176, 0.3);
+    text-underline-offset: 3px;
+  }
+  .prose-tabisuke a:hover {
+    color: var(--color-tabisora-deep);
+    text-decoration-color: currentColor;
+  }
+  .prose-tabisuke strong {
+    color: var(--color-sumi);
+    font-weight: 700;
+  }
+  .prose-tabisuke ul,
+  .prose-tabisuke ol {
+    padding-left: 1.5rem;
+  }
+  .prose-tabisuke ul > li {
+    list-style: disc;
+    margin-top: 0.4em;
+  }
+  .prose-tabisuke ol > li {
+    list-style: decimal;
+    margin-top: 0.4em;
+  }
+  .prose-tabisuke blockquote {
+    border-left: 4px solid var(--color-nukumori);
+    background: rgba(246, 173, 85, 0.06);
+    padding: 1rem 1.25rem;
+    color: var(--color-sumi-soft);
+    font-style: normal;
+    border-radius: 0 0.5rem 0.5rem 0;
+  }
+  .prose-tabisuke code {
+    background: rgba(45, 55, 72, 0.06);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.9em;
+  }
+  .prose-tabisuke hr {
+    border: 0;
+    border-top: 1px solid rgba(45, 55, 72, 0.1);
+    margin: 2em 0;
+  }
+</style>

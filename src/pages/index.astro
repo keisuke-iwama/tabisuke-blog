@@ -1,5 +1,6 @@
 ---
 import Layout from "../layouts/Layout.astro";
+import { getCollection } from "astro:content";
 
 const pillars = [
   {
@@ -21,9 +22,17 @@ const pillars = [
 
 const socials = [
   { name: "Instagram", href: "https://instagram.com/hello.tabisuke", handle: "@hello.tabisuke", disabled: false },
-  { name: "X", href: "#", handle: "近日公開", disabled: true },
+  { name: "X", href: "https://x.com/tabisuke_blog", handle: "@tabisuke_blog", disabled: false },
   { name: "YouTube", href: "#", handle: "近日公開", disabled: true },
 ];
+
+const latestPosts = (await getCollection("posts"))
+  .filter((p) => !p.data.draft)
+  .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+  .slice(0, 3);
+
+const formatDate = (d: Date) =>
+  d.toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" });
 ---
 
 <Layout>
@@ -73,7 +82,7 @@ const socials = [
       <div class="max-w-5xl mx-auto px-6 py-16 sm:py-20">
         <div class="text-center mb-12">
           <h2 class="font-serif text-2xl sm:text-3xl font-bold text-sumi mb-3">
-            これからお届けする3つの軸
+            お届けする3つの軸
           </h2>
           <div class="w-16 h-1 bg-nukumori mx-auto rounded-full"></div>
         </div>
@@ -88,6 +97,52 @@ const socials = [
         </div>
       </div>
     </section>
+
+    {latestPosts.length > 0 && (
+      <section class="bg-kami border-b border-sumi/10">
+        <div class="max-w-5xl mx-auto px-6 py-16 sm:py-20">
+          <div class="text-center mb-12">
+            <h2 class="font-serif text-2xl sm:text-3xl font-bold text-sumi mb-3">
+              最新の記事
+            </h2>
+            <div class="w-16 h-1 bg-nukumori mx-auto rounded-full"></div>
+          </div>
+          <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {latestPosts.map((post) => (
+              <a
+                href={`/posts/${post.id}/`}
+                class="bg-white rounded-2xl p-6 border border-sumi/5 hover:border-tabisora/30 hover:shadow-md transition-all flex flex-col"
+              >
+                <div class="text-4xl mb-3">{post.data.heroEmoji}</div>
+                <div class="flex items-center gap-2 mb-3">
+                  <span class="text-xs font-medium px-2 py-0.5 rounded-full bg-tabisora/10 text-tabisora">
+                    {post.data.category}
+                  </span>
+                  <time class="text-xs text-sumi-soft" datetime={post.data.pubDate.toISOString()}>
+                    {formatDate(post.data.pubDate)}
+                  </time>
+                </div>
+                <h3 class="font-serif text-base font-bold text-sumi mb-2 leading-snug">
+                  {post.data.title}
+                </h3>
+                <p class="text-sm text-sumi-soft leading-relaxed flex-1">
+                  {post.data.description}
+                </p>
+                <p class="text-xs text-tabisora mt-4 font-medium">続きを読む →</p>
+              </a>
+            ))}
+          </div>
+          <div class="text-center mt-10">
+            <a
+              href="/posts/"
+              class="inline-flex items-center gap-2 text-tabisora hover:text-tabisora-deep transition-colors font-medium"
+            >
+              すべての記事を見る →
+            </a>
+          </div>
+        </div>
+      </section>
+    )}
 
     <!-- SNS Links -->
     <section>

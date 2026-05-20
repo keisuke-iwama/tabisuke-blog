@@ -15,5 +15,10 @@
     "@tailwindcss/vite": "^4.2.4",
     "astro": "^6.3.0",
     "tailwindcss": "^4.2.4"
+  },
+  "devDependencies": {
+    "@anthropic-ai/sdk": "^0.97.1",
+    "gray-matter": "^4.0.3",
+    "slugify": "^1.6.9"
   }
 }
