@@ -1,0 +1,58 @@
+---
+import { pickAffiliates } from "../data/affiliates";
+
+interface Props {
+  category: string;
+}
+
+const { category } = Astro.props;
+const ads = pickAffiliates(category);
+---
+
+{ads.length > 0 && (
+  <aside class="affiliate-block">
+    <p class="affiliate-pr">広告・PR</p>
+    <div class="affiliate-items">
+      {ads.map((ad) => (
+        <div class="affiliate-item">
+          {ad.label && <p class="affiliate-label">{ad.label}</p>}
+          <div class="affiliate-tag" set:html={ad.linkHtml} />
+        </div>
+      ))}
+    </div>
+  </aside>
+)}
+
+<style>
+  .affiliate-block {
+    margin-top: 2.5rem;
+    padding: 1.25rem 1.25rem 1.5rem;
+    border: 1px solid rgba(45, 55, 72, 0.1);
+    border-radius: 0.75rem;
+    background: var(--color-kami);
+  }
+  .affiliate-pr {
+    font-size: 0.7rem;
+    letter-spacing: 0.05em;
+    color: var(--color-sumi-soft);
+    margin: 0 0 0.75rem;
+  }
+  .affiliate-items {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+  .affiliate-label {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--color-sumi);
+    margin: 0 0 0.5rem;
+  }
+  .affiliate-tag :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+  .affiliate-tag :global(a) {
+    color: var(--color-tabisora);
+  }
+</style>

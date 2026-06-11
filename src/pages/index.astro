@@ -33,9 +33,31 @@ const latestPosts = (await getCollection("posts"))
 
 const formatDate = (d: Date) =>
   d.toLocaleDateString("ja-JP", { year: "numeric", month: "long", day: "numeric" });
+
+const siteUrl = "https://tabisuke.blog";
+const siteJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  name: "たびすけ",
+  alternateName: "たびすけ｜旅をたすける、旅でみつける",
+  url: siteUrl,
+  inLanguage: "ja-JP",
+  description:
+    "国内旅行記・旅のノウハウ・グルメ宿レビューを発信する旅メディア「たびすけ」。",
+  publisher: {
+    "@type": "Organization",
+    name: "たびすけ",
+    url: siteUrl,
+    logo: { "@type": "ImageObject", url: `${siteUrl}/og.png` },
+    sameAs: [
+      "https://instagram.com/hello.tabisuke",
+      "https://x.com/tabisuke_blog",
+    ],
+  },
+};
 ---
 
-<Layout>
+<Layout jsonLd={siteJsonLd}>
   <main class="min-h-screen flex flex-col">
     <!-- Header -->
     <header class="border-b border-sumi/10">
