@@ -38,34 +38,47 @@ export interface AffiliateProgram {
 export const MAX_PER_ARTICLE = 2;
 
 /**
- * ▼ ここに A8.net の広告を追加していく ▼
- * 下記はサンプル(enabled:false なので表示されません)。
- * A8.netで提携できたら linkHtml を差し替えて enabled:true にしてください。
+ * ▼ A8.net 提携済み広告(媒体「たびすけ」websiteId=005)▼
+ * 2026-06-15 時点で提携完了したプログラムの実タグを登録済み。
+ * 追加・差し替え時は A8.net の「広告リンク作成」でサイト=たびすけを選び、
+ * 取得したHTMLを linkHtml にそのまま貼ること(URLの手書き改変は成果非計測)。
  */
 export const AFFILIATES: AffiliateProgram[] = [
   {
-    id: "rakuten-travel",
-    name: "楽天トラベル(サンプル枠)",
+    id: "jalan",
+    name: "じゃらんnet宿泊予約(リクルート)",
     categories: ["国内旅行記", "グルメ・宿レビュー"],
     label: "この旅の宿を予約する",
-    linkHtml: `<!-- ここに A8.net の楽天トラベル広告タグを貼り付け -->`,
-    enabled: false,
+    linkHtml: `<a href="https://px.a8.net/svt/ejp?a8mat=4B5WG7+E4GAHE+14CS+68EPE" rel="nofollow">【じゃらん】国内25,000軒の宿をネットで予約OK！2％ポイント還元！</a>
+<img border="0" width="1" height="1" src="https://www10.a8.net/0.gif?a8mat=4B5WG7+E4GAHE+14CS+68EPE" alt="">`,
+    enabled: true,
   },
   {
-    id: "jalan",
-    name: "じゃらん(サンプル枠)",
-    categories: ["国内旅行記", "グルメ・宿レビュー"],
-    label: "宿・温泉を探す",
-    linkHtml: `<!-- ここに A8.net のじゃらん広告タグを貼り付け -->`,
-    enabled: false,
+    id: "skyrental",
+    name: "スカイレンタカー(国内格安レンタカー)",
+    categories: ["国内旅行記", "旅のノウハウ"],
+    label: "現地の移動はレンタカーで",
+    linkHtml: `<a href="https://px.a8.net/svt/ejp?a8mat=4B5WG7+EIQP02+2AIA+61RIA" rel="nofollow">九州の格安レンタカー予約なら【スカイレンタカー】</a>
+<img border="0" width="1" height="1" src="https://www12.a8.net/0.gif?a8mat=4B5WG7+EIQP02+2AIA+61RIA" alt="">`,
+    enabled: true,
   },
   {
-    id: "travel-wifi",
-    name: "海外/国内Wi-Fi・旅行用品(サンプル枠)",
+    id: "global-wifi",
+    name: "グローバルWiFi(海外WiFiレンタル)",
     categories: ["旅のノウハウ"],
-    label: "旅の準備に",
-    linkHtml: `<!-- ここに A8.net の関連広告タグを貼り付け -->`,
-    enabled: false,
+    label: "海外旅行のネット環境に",
+    linkHtml: `<a href="https://px.a8.net/svt/ejp?a8mat=4B5WG7+E5N5OY+2JMM+64C3M" rel="nofollow">グローバルWiFi公式サイトを見てみる</a>
+<img border="0" width="1" height="1" src="https://www16.a8.net/0.gif?a8mat=4B5WG7+E5N5OY+2JMM+64C3M" alt="">`,
+    enabled: true,
+  },
+  {
+    id: "ry-rental",
+    name: "アールワイレンタル(スーツケースレンタル)",
+    categories: ["旅のノウハウ"],
+    label: "旅の準備・持ち物に",
+    linkHtml: `<a href="https://px.a8.net/svt/ejp?a8mat=4B5WG7+E68LAQ+3J30+62ENM" rel="nofollow">スーツケースレンタルなら【アールワイレンタル】</a>
+<img border="0" width="1" height="1" src="https://www14.a8.net/0.gif?a8mat=4B5WG7+E68LAQ+3J30+62ENM" alt="">`,
+    enabled: true,
   },
 ];
 
