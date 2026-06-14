@@ -54,6 +54,15 @@ export const AFFILIATES: AffiliateProgram[] = [
     enabled: true,
   },
   {
+    id: "rakuten-travel",
+    name: "楽天トラベル(楽天アフィリエイト)",
+    categories: ["国内旅行記", "グルメ・宿レビュー"],
+    label: "楽天ポイントで宿を予約する",
+    // 楽天アフィリエイト発行タグ。href(hb.afl.rakuten.co.jp〜)は計測URLのため改変禁止。アンカー文言のみ表示用に変更。
+    linkHtml: `<a href="https://hb.afl.rakuten.co.jp/hgc/54e80c36.b50f4ee1.54e80c37.61398c1d/?pc=https%3A%2F%2Ftravel.rakuten.co.jp%2F&link_type=text&ut=eyJwYWdlIjoidXJsIiwidHlwZSI6InRleHQiLCJjb2wiOjF9" target="_blank" rel="nofollow sponsored noopener" style="word-wrap:break-word;">楽天トラベルで宿を探す</a>`,
+    enabled: true,
+  },
+  {
     id: "skyrental",
     name: "スカイレンタカー(国内格安レンタカー)",
     categories: ["国内旅行記", "旅のノウハウ"],
