@@ -91,17 +91,34 @@ export const AFFILIATES: AffiliateProgram[] = [
   },
 ];
 
+/** 文字列から決定的なハッシュ値を作る(ビルドごとに変わらない) */
+function hashSeed(seed: string): number {
+  let h = 5381;
+  for (let i = 0; i < seed.length; i++) {
+    h = (h * 33) ^ seed.charCodeAt(i);
+  }
+  return Math.abs(h);
+}
+
 /**
  * 指定カテゴリに出せる有効な広告を最大 MAX_PER_ARTICLE 件返す。
  * カテゴリ一致(または "all")かつ enabled かつ linkHtml が実在するもののみ。
+ *
+ * seed(記事のパスなど)を渡すと、記事ごとに開始位置をローテーションして
+ * 候補が MAX_PER_ARTICLE 件を超える場合も全広告が公平に露出する。
+ * 同じ記事では常に同じ広告が出る(決定的)。
  */
-export function pickAffiliates(category: string): AffiliateProgram[] {
-  return AFFILIATES.filter(
+export function pickAffiliates(category: string, seed = ""): AffiliateProgram[] {
+  const matched = AFFILIATES.filter(
     (a) =>
       a.enabled &&
       a.linkHtml.trim().length > 0 &&
       !a.linkHtml.trim().startsWith("<!--") &&
       (a.categories.includes("all") ||
         a.categories.includes(category as TabisukeCategory))
-  ).slice(0, MAX_PER_ARTICLE);
+  );
+  if (matched.length <= MAX_PER_ARTICLE) return matched;
+  const start = seed ? hashSeed(seed) % matched.length : 0;
+  const rotated = [...matched.slice(start), ...matched.slice(0, start)];
+  return rotated.slice(0, MAX_PER_ARTICLE);
 }

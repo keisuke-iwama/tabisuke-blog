@@ -117,7 +117,7 @@ const breadcrumbJsonLd = {
           <slot />
         </div>
 
-        <AffiliateBlock category={category} />
+        <AffiliateBlock category={category} seed={Astro.url.pathname} />
 
         {aiGenerated && (
           <div class="mt-12 pt-8 border-t border-sumi/10">

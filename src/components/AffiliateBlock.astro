@@ -3,10 +3,11 @@ import { pickAffiliates } from "../data/affiliates";
 
 interface Props {
   category: string;
+  seed?: string;
 }
 
-const { category } = Astro.props;
-const ads = pickAffiliates(category);
+const { category, seed = "" } = Astro.props;
+const ads = pickAffiliates(category, seed);
 ---
 
 {ads.length > 0 && (

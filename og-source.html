@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    width: 1200px;
+    height: 630px;
+    background: linear-gradient(135deg, #1F4E7A 0%, #2B6CB0 55%, #4A90D9 100%);
+    font-family: "Hiragino Sans", "Hiragino Kaku Gothic ProN", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .cloud {
+    position: absolute;
+    background: rgba(255, 250, 240, 0.12);
+    border-radius: 999px;
+  }
+  .c1 { width: 420px; height: 120px; top: 60px; left: -80px; }
+  .c2 { width: 340px; height: 100px; bottom: 90px; right: -60px; }
+  .c3 { width: 220px; height: 70px; top: 140px; right: 180px; }
+  .card {
+    text-align: center;
+    color: #FFFAF0;
+    z-index: 1;
+  }
+  .emoji { font-size: 110px; line-height: 1; margin-bottom: 28px; }
+  .title {
+    font-size: 128px;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-shadow: 0 4px 24px rgba(31, 78, 122, 0.6);
+    margin-bottom: 24px;
+  }
+  .subtitle {
+    font-size: 40px;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    opacity: 0.92;
+  }
+  .domain {
+    position: absolute;
+    bottom: 44px;
+    width: 100%;
+    text-align: center;
+    font-size: 30px;
+    letter-spacing: 0.12em;
+    color: rgba(255, 250, 240, 0.85);
+    z-index: 1;
+  }
+</style>
+</head>
+<body>
+  <div class="cloud c1"></div>
+  <div class="cloud c2"></div>
+  <div class="cloud c3"></div>
+  <div class="card">
+    <div class="emoji">🧳</div>
+    <div class="title">たびすけ</div>
+    <div class="subtitle">旅の記録と、旅がラクになるノウハウ</div>
+  </div>
+  <div class="domain">tabisuke.blog</div>
+</body>
+</html>
