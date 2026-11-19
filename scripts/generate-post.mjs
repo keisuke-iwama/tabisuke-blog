@@ -24,6 +24,7 @@ import slugifyPkg from "slugify";
 const slugify = slugifyPkg.default || slugifyPkg;
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const POSTS_DIR = join(__dirname, "..", "src", "content", "posts");
+const KEYWORDS_FILE = join(__dirname, "keywords.json");
 
 // ============== 設定 ==============
 const MODEL = "claude-sonnet-4-5"; // Sonnet 4.5
@@ -54,6 +55,7 @@ function loadPastPosts() {
           title: data.title,
           category: data.category || "(unknown)",
           pubDate: data.pubDate,
+          targetKeyword: data.targetKeyword || null,
         });
       }
     } catch (e) {
@@ -64,8 +66,18 @@ function loadPastPosts() {
   return posts;
 }
 
+// ============== 狙うキーワードの選定 ==============
+// keywords.json の上から順に、まだ記事にしていない(targetKeyword未使用)ものを1つ選ぶ。
+// 全部使い切ったら null → Claude に自由選定させる(従来動作)。
+function pickKeyword(pastPosts) {
+  if (!existsSync(KEYWORDS_FILE)) return null;
+  const list = JSON.parse(readFileSync(KEYWORDS_FILE, "utf-8"));
+  const used = new Set(pastPosts.map((p) => p.targetKeyword).filter(Boolean));
+  return list.find((k) => !used.has(k.kw)) || null;
+}
+
 // ============== プロンプト構築 ==============
-function buildPrompt(pastPosts) {
+function buildPrompt(pastPosts, keyword) {
   const recent = pastPosts.slice(0, 30);
   const pastList =
     recent.length > 0
@@ -91,8 +103,15 @@ function buildPrompt(pastPosts) {
 読者: 20-30代の国内旅行好き、ファミリー層
 
 # 今日の記事を1本書いてください
-
-## カテゴリ選定ルール
+${keyword ? `
+## 今日の狙い検索キーワード(最重要)
+「${keyword.kw}」で検索した人の疑問に、この1記事で答えきってください。
+- カテゴリは「${keyword.category}」で固定
+- タイトルの前半にこのキーワードの主要語を自然な語順で入れる
+- この検索をする人が知りたいこと(所要時間・費用の目安・行き方・回る順番・注意点・よくある疑問など)を先回りして網羅する
+- 最後の「まとめ」の直前に「## よくある質問」を置き、Q&Aを3つ書く(各Qは ### 見出し)
+` : ""}
+## カテゴリ選定ルール${keyword ? "(狙いキーワード指定時は上記カテゴリを優先)" : ""}
 以下の3つから、過去30記事との重複を避けつつ、最も少ないカテゴリ寄りで選んでください:
 ${CATEGORIES.map((c) => `- ${c}`).join("\n")}
 
@@ -130,6 +149,7 @@ title: "記事タイトル(検索キーワードを前半に含め32文字以内
 description: "SEO用説明文(120-160文字、内容を要約)"
 pubDate: ${new Date().toISOString().split("T")[0]}
 category: "国内旅行記" | "旅のノウハウ" | "グルメ・宿レビュー"
+slug: "英小文字とハイフンだけのURL用スラッグ(内容を表すローマ字/英語、例: hakone-day-trip-course、3〜6語)"
 tags:
   - "タグ1"
   - "タグ2"
@@ -179,7 +199,19 @@ function validateAndParse(text) {
 }
 
 // ============== slug 生成 ==============
-function makeSlug(title, date) {
+// Claude が出した英字スラッグを優先(検索結果・SNSで内容が伝わるURLにするため)
+function cleanSlug(s) {
+  return String(s || "")
+    .toLowerCase()
+    .replace(/[^a-z0-9-]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "")
+    .slice(0, 60);
+}
+
+function makeSlug(title, date, modelSlug) {
+  const fromModel = cleanSlug(modelSlug);
+  if (fromModel.length >= 5) return `${date}-${fromModel}`;
   // タイトルをラテン化しない(日本語のまま)とfile-name安全じゃないので、
   // 日付プレフィックス + 簡易ハッシュ + slugify(英数化)
   const base = slugify(title, {
@@ -207,8 +239,8 @@ function uniqueFilePath(slug) {
 }
 
 // ============== Claude 呼び出し ==============
-async function generate(pastPosts) {
-  const prompt = buildPrompt(pastPosts);
+async function generate(pastPosts, keyword) {
+  const prompt = buildPrompt(pastPosts, keyword);
   const msg = await client.messages.create({
     model: MODEL,
     max_tokens: 8000,
@@ -225,18 +257,24 @@ async function main() {
   const pastPosts = loadPastPosts();
   console.log(`Found ${pastPosts.length} past posts`);
 
+  const keyword = pickKeyword(pastPosts);
+  console.log(keyword ? `Target keyword: ${keyword.kw} [${keyword.category}]` : "No target keyword left (free topic)");
+
   let attempt = 0;
   let lastError = null;
   while (attempt <= MAX_RETRIES) {
     attempt++;
     console.log(`\n=== Attempt ${attempt}/${MAX_RETRIES + 1} ===`);
     try {
-      const raw = await generate(pastPosts);
-      const { data, raw: cleaned } = validateAndParse(raw);
+      const raw = await generate(pastPosts, keyword);
+      const { data, content } = validateAndParse(raw);
       const date = new Date().toISOString().split("T")[0];
-      const slug = makeSlug(data.title, date);
+      const slug = makeSlug(data.title, date, data.slug);
+      // slug はファイル名にだけ使う(frontmatterに残すとAstroがURLを上書きする)
+      delete data.slug;
+      if (keyword) data.targetKeyword = keyword.kw;
       const filePath = uniqueFilePath(slug);
-      writeFileSync(filePath, cleaned, "utf-8");
+      writeFileSync(filePath, matter.stringify(content, data), "utf-8");
       console.log(`✓ Generated: ${filePath}`);
       console.log(`  title: ${data.title}`);
       console.log(`  category: ${data.category}`);

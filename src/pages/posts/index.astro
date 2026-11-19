@@ -1,6 +1,7 @@
 ---
 import Layout from "../../layouts/Layout.astro";
 import { getCollection } from "astro:content";
+import { CATEGORY_SLUGS, categoryUrl } from "../../data/categories";
 
 const posts = (await getCollection("posts"))
   .filter((p) => !p.data.draft)
@@ -36,6 +37,11 @@ const formatDate = (d: Date) =>
         <h1 class="font-serif text-3xl sm:text-4xl font-bold text-sumi mb-3">記事一覧</h1>
         <p class="text-sm text-sumi-soft">旅のヒントを毎日お届けしています。</p>
         <div class="w-16 h-1 bg-nukumori mx-auto rounded-full mt-6"></div>
+        <nav class="mt-8 flex flex-wrap justify-center gap-3" aria-label="カテゴリ">
+          {Object.keys(CATEGORY_SLUGS).map((c) => (
+            <a href={categoryUrl(c)} class="text-sm px-4 py-1.5 rounded-full border border-tabisora/30 text-tabisora hover:bg-tabisora/10 transition-colors">{c}</a>
+          ))}
+        </nav>
       </div>
     </section>
 

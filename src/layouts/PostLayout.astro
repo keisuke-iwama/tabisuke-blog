@@ -1,6 +1,7 @@
 ---
 import Layout from "./Layout.astro";
 import AffiliateBlock from "../components/AffiliateBlock.astro";
+import { categoryUrl } from "../data/categories";
 
 interface Props {
   title: string;
@@ -10,9 +11,10 @@ interface Props {
   tags: string[];
   heroEmoji: string;
   aiGenerated: boolean;
+  related?: { id: string; title: string; emoji: string }[];
 }
 
-const { title, description, pubDate, category, tags, heroEmoji, aiGenerated } = Astro.props;
+const { title, description, pubDate, category, tags, heroEmoji, aiGenerated, related = [] } = Astro.props;
 
 const formattedDate = pubDate.toLocaleDateString("ja-JP", {
   year: "numeric",
@@ -50,7 +52,7 @@ const breadcrumbJsonLd = {
   "@type": "BreadcrumbList",
   itemListElement: [
     { "@type": "ListItem", position: 1, name: "ホーム", item: siteUrl },
-    { "@type": "ListItem", position: 2, name: "記事一覧", item: `${siteUrl}/posts/` },
+    { "@type": "ListItem", position: 2, name: category, item: `${siteUrl}${categoryUrl(category)}` },
     { "@type": "ListItem", position: 3, name: title, item: canonicalUrl },
   ],
 };
@@ -85,9 +87,9 @@ const breadcrumbJsonLd = {
       <div class="bg-white border-b border-sumi/10">
         <div class="max-w-3xl mx-auto px-6 py-12 sm:py-16">
           <div class="flex items-center gap-3 mb-4">
-            <span class="text-xs font-medium px-3 py-1 rounded-full bg-tabisora/10 text-tabisora">
+            <a href={categoryUrl(category)} class="text-xs font-medium px-3 py-1 rounded-full bg-tabisora/10 text-tabisora hover:bg-tabisora/20 transition-colors">
               {category}
-            </span>
+            </a>
             <time class="text-xs text-sumi-soft" datetime={pubDate.toISOString()}>
               {formattedDate}
             </time>
@@ -128,6 +130,25 @@ const breadcrumbJsonLd = {
         )}
       </div>
     </article>
+
+    <!-- Related posts -->
+    {related.length > 0 && (
+      <section class="border-t border-sumi/10">
+        <div class="max-w-3xl mx-auto px-6 py-12">
+          <h2 class="font-serif text-xl font-bold text-sumi mb-6">あわせて読みたい</h2>
+          <ul class="grid sm:grid-cols-2 gap-4">
+            {related.map((r) => (
+              <li>
+                <a href={`/posts/${r.id}/`} class="flex items-start gap-3 bg-white rounded-xl p-4 border border-sumi/5 hover:border-tabisora/30 hover:shadow-sm transition-all">
+                  <span class="text-2xl">{r.emoji}</span>
+                  <span class="text-sm font-medium text-sumi leading-snug">{r.title}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )}
 
     <!-- Related links -->
     <section class="bg-white border-t border-sumi/10">

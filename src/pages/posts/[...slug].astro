@@ -12,6 +12,22 @@ export async function getStaticPaths() {
 
 const { post } = Astro.props;
 const { Content } = await render(post);
+
+// 関連記事: 同カテゴリ優先 + タグの重なりでスコアリング(内部リンク強化)
+const all = await getCollection("posts", ({ data }) => !data.draft);
+const myTags = new Set(post.data.tags);
+const related = all
+  .filter((p) => p.id !== post.id)
+  .map((p) => ({
+    p,
+    score:
+      (p.data.category === post.data.category ? 2 : 0) +
+      p.data.tags.filter((t) => myTags.has(t)).length * 3,
+  }))
+  .filter((x) => x.score > 0)
+  .sort((a, b) => b.score - a.score || b.p.data.pubDate.valueOf() - a.p.data.pubDate.valueOf())
+  .slice(0, 4)
+  .map(({ p }) => ({ id: p.id, title: p.data.title, emoji: p.data.heroEmoji }));
 ---
 
 <PostLayout
@@ -22,6 +38,7 @@ const { Content } = await render(post);
   tags={post.data.tags}
   heroEmoji={post.data.heroEmoji}
   aiGenerated={post.data.aiGenerated}
+  related={related}
 >
   <Content />
 </PostLayout>

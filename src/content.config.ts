@@ -11,6 +11,7 @@ const posts = defineCollection({
     tags: z.array(z.string()).default([]),
     heroEmoji: z.string().default("🗾"),
     aiGenerated: z.boolean().default(false),
+    targetKeyword: z.string().optional(),
     draft: z.boolean().default(false),
   }),
 });
