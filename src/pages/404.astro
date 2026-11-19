@@ -1,0 +1,18 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { CATEGORY_SLUGS, categoryUrl } from "../data/categories";
+---
+
+<Layout title="ページが見つかりません｜たびすけ" description="お探しのページは見つかりませんでした。">
+  <main class="min-h-screen flex flex-col items-center justify-center px-6 py-24 text-center">
+    <div class="text-5xl mb-6">🧭</div>
+    <h1 class="font-serif text-3xl font-bold text-sumi mb-3">ページが見つかりません</h1>
+    <p class="text-sm text-sumi-soft mb-8">URLが変わったか、削除された可能性があります。</p>
+    <div class="flex flex-wrap justify-center gap-3 mb-8">
+      {Object.keys(CATEGORY_SLUGS).map((c) => (
+        <a href={categoryUrl(c)} class="text-sm px-4 py-1.5 rounded-full border border-tabisora/30 text-tabisora hover:bg-tabisora/10 transition-colors">{c}</a>
+      ))}
+    </div>
+    <a href="/" class="text-tabisora font-medium hover:text-tabisora-deep">← トップへ戻る</a>
+  </main>
+</Layout>
