@@ -17,7 +17,7 @@ const { Content } = await render(post);
 const all = await getCollection("posts", ({ data }) => !data.draft);
 const myTags = new Set(post.data.tags);
 const related = all
-  .filter((p) => p.id !== post.id)
+  .filter((p) => p.id !== post.id && !p.data.noindex)
   .map((p) => ({
     p,
     score:
@@ -39,6 +39,7 @@ const related = all
   heroEmoji={post.data.heroEmoji}
   aiGenerated={post.data.aiGenerated}
   related={related}
+  noindex={post.data.noindex}
 >
   <Content />
 </PostLayout>

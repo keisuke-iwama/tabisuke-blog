@@ -8,6 +8,7 @@ interface Props {
   publishedTime?: Date;
   modifiedTime?: Date;
   jsonLd?: object | object[];
+  noindex?: boolean;
 }
 
 const {
@@ -17,6 +18,7 @@ const {
   publishedTime,
   modifiedTime,
   jsonLd,
+  noindex = false,
 } = Astro.props;
 
 const siteUrl = "https://tabisuke.blog";
@@ -32,6 +34,7 @@ const jsonLdItems = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [];
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {noindex && <meta name="robots" content="noindex, follow" />}
     <meta name="google-site-verification" content="hnTXgZHwEmT6ttOhdDNRoXtoLVJTiXTUuNI3YFWvodA" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />

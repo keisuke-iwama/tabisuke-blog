@@ -12,9 +12,10 @@ interface Props {
   heroEmoji: string;
   aiGenerated: boolean;
   related?: { id: string; title: string; emoji: string }[];
+  noindex?: boolean;
 }
 
-const { title, description, pubDate, category, tags, heroEmoji, aiGenerated, related = [] } = Astro.props;
+const { title, description, pubDate, category, tags, heroEmoji, aiGenerated, related = [], noindex = false } = Astro.props;
 
 const formattedDate = pubDate.toLocaleDateString("ja-JP", {
   year: "numeric",
@@ -64,6 +65,7 @@ const breadcrumbJsonLd = {
   ogType="article"
   publishedTime={pubDate}
   jsonLd={[articleJsonLd, breadcrumbJsonLd]}
+  noindex={noindex}
 >
   <main class="min-h-screen flex flex-col">
     <!-- Header -->
